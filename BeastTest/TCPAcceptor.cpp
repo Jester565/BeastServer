@@ -1,21 +1,20 @@
 #include "TCPAcceptor.h"
-#include "ServicePool.h"
-#include "TCPConnection.h"
 #include <iostream>
+#include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/asio/placeholders.hpp>
 
 using namespace boost::asio::ip;
 
-TCPAcceptor::TCPAcceptor(boost::shared_ptr<ServicePool> servicePool)
-	:servicePool(servicePool)
+TCPAcceptor::TCPAcceptor(uint16_t port, boost::asio::io_service* ioService, raw_connect_handler conHandler)
+	:ioService(ioService), conHandler(conHandler)
 {
+	acceptor = boost::make_shared<tcp::acceptor>(*ioService, tcp::endpoint(boost::asio::ip::tcp::v6(), port));
 }
 
-void TCPAcceptor::detatch(uint16_t port)
+void TCPAcceptor::run()
 {
-	acceptor = boost::make_shared<tcp::acceptor>(servicePool->getNextIOService(), tcp::endpoint(boost::asio::ip::tcp::v6(), port));
 	runAccept();
 }
 
@@ -42,14 +41,12 @@ void TCPAcceptor::asyncAcceptHandler(const boost::system::error_code & ec)
 		std::cerr << "Error" << std::endl;
 		return;
 	}
-	boost::shared_ptr<TCPConnection> tcpConnection = boost::make_shared<TCPConnection>(tempSocket);
-	tcpConnection->start();
-	cons.push_back(tcpConnection);
+	conHandler(tempSocket);
 	runAccept();
 }
 
 void TCPAcceptor::runAccept()
 {
-	tempSocket = boost::make_shared<boost::asio::ip::tcp::socket>(servicePool->getNextIOService());
+	tempSocket = boost::make_shared<boost::asio::ip::tcp::socket>(*ioService);
 	acceptor->async_accept(*tempSocket, boost::bind(&TCPAcceptor::asyncAcceptHandler, shared_from_this(), boost::asio::placeholders::error));
 }

@@ -1,11 +1,10 @@
 #include <iostream>
 #include <boost/beast.hpp>
 #include "Server.h"
+#include <boost/asio/io_service.hpp>
 
 int main() {
-	Server* server = new Server();
-	server->run(5650);
-	while (true) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(10000));
-	}
+	Server* server = new Server(5650);
+	server->run();
+	server->getIOService()->run();
 }

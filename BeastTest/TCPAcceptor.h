@@ -1,20 +1,22 @@
 #pragma once
+#include "Typedef.h"
 #include <stdint.h>
-#include <boost/asio/ip/tcp.hpp>
+#include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
 #include <boost/enable_shared_from_this.hpp>
-
-class ServicePool;
-class TCPConnection;
 
 class TCPAcceptor : public boost::enable_shared_from_this<TCPAcceptor>
 {
 public:
-	TCPAcceptor(boost::shared_ptr<ServicePool> servicePool);
+	TCPAcceptor(uint16_t port, boost::asio::io_service* ioService, raw_connect_handler conHandler = nullptr);
 
-	void detatch(uint16_t port);
+	void run();
 
 	void close();
+
+	boost::shared_ptr<boost::asio::ip::tcp::acceptor> getRawAcceptor() {
+		return acceptor;
+	}
 
 	~TCPAcceptor();
 
@@ -27,9 +29,8 @@ private:
 
 	boost::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor;
 
-	boost::shared_ptr<ServicePool> servicePool;
+	boost::asio::io_service* ioService;
 
-	//TEMPORARY
-	std::vector<boost::shared_ptr<TCPConnection>> cons;
+	raw_connect_handler conHandler;
 };
 

@@ -1,19 +1,31 @@
 #pragma once
+#include "Typedef.h"
 #include <stdint.h>
 #include <thread>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/shared_ptr.hpp>
 
-class ServicePool;
 class TCPAcceptor;
+class ClientManager;
 
 class Server {
 public:
-	Server();
+	Server(uint16_t port);
 
-	void run(uint16_t port);
+	void run();
+
+	boost::asio::io_service* getIOService() {
+		return ioService;
+	}
 
 private:
-	boost::shared_ptr<ServicePool> servicePool;
 	boost::shared_ptr<TCPAcceptor> tcpAcceptor;
+
+	ClientManager* clientManager;
+
+	void rawConnectHandler(socket_ptr);
+	void msgHandler(client_ptr, req_ptr);
+	void disconnectHandler(client_ptr);
+
+	boost::asio::io_service* ioService;
 };
