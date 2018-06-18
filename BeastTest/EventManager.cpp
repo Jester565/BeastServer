@@ -1,6 +1,5 @@
 #include "EventManager.h"
 #include "HttpClient.h"
-#include "EventHandler.h"
 
 using namespace boost::beast;
 

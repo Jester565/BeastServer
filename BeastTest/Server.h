@@ -7,6 +7,7 @@
 
 class TCPAcceptor;
 class ClientManager;
+class EventManager;
 
 class Server {
 public:
@@ -22,6 +23,7 @@ private:
 	boost::shared_ptr<TCPAcceptor> tcpAcceptor;
 
 	ClientManager* clientManager;
+	EventManager* evtManager;
 
 	void rawConnectHandler(socket_ptr);
 	void msgHandler(client_ptr, req_ptr);

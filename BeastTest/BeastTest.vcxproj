@@ -74,12 +74,12 @@
     <LibraryPath>D:\boost_1_66_0_b1\boost_1_66_0\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\boost_1_66_0_b1\boost_1_66_0;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\boost_1_66_0_b1\boost_1_66_0\stage\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\ajcra\Desktop\c++\libs\boost_1_66_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\ajcra\Desktop\c++\libs\boost_1_66_0\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>D:\boost_1_66_0_b1\boost_1_66_0;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\boost_1_66_0_b1\boost_1_66_0\stage\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\ajcra\Desktop\c++\libs\boost_1_66_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\ajcra\Desktop\c++\libs\boost_1_66_0\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -132,10 +132,8 @@
   <ItemGroup>
     <ClCompile Include="ClientManager.cpp" />
     <ClCompile Include="EventManager.cpp" />
-    <ClCompile Include="Program.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="StateManager.cpp" />
     <ClCompile Include="TCPAcceptor.cpp" />
     <ClCompile Include="HttpClient.cpp" />
     <ClCompile Include="TimedRunner.cpp" />
@@ -144,9 +142,7 @@
     <ClInclude Include="ClientManager.h" />
     <ClInclude Include="ConditionVariable.h" />
     <ClInclude Include="EventManager.h" />
-    <ClInclude Include="Program.h" />
     <ClInclude Include="Server.h" />
-    <ClInclude Include="StateManager.h" />
     <ClInclude Include="TCPAcceptor.h" />
     <ClInclude Include="HttpClient.h" />
     <ClInclude Include="TimedRunner.h" />

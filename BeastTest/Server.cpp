@@ -2,6 +2,7 @@
 #include "TCPAcceptor.h"
 #include "HttpClient.h"
 #include "ClientManager.h"
+#include "EventManager.h"
 
 Server::Server(uint16_t port)
 {
@@ -23,13 +24,16 @@ void Server::rawConnectHandler(socket_ptr socket)
 		(disconnect_handler)std::bind(&Server::disconnectHandler, this, std::placeholders::_1)));
 	clientManager->addClient(client);
 	client->start();
+	evtManager->runConnect(client);
 }
 
 void Server::msgHandler(client_ptr client, req_ptr req)
 {
 	std::cout << "MESSAGE" << std::endl;
 	std::cout << *req << std::endl;
-	
+
+	evtManager->runMessage(client, req);
+	/*
 	auto resp = CreateResponse();
 	resp->result(200);
 	resp->keep_alive(true);
@@ -37,10 +41,12 @@ void Server::msgHandler(client_ptr client, req_ptr req)
 	resp->set(http::field::content_type, "text/plain");
 	resp->body() = (std::string)req->body();
 	client->send(resp);
+	*/
 }
 
 void Server::disconnectHandler(client_ptr client)
 {
+	evtManager->runDisconnect(client);
 	std::cout << "DISCONNECT" << std::endl;
 	clientManager->removeClient(client);
 }
