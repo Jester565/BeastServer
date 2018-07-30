@@ -12,15 +12,11 @@ using namespace boost::beast;
 class HttpClient : public boost::enable_shared_from_this<HttpClient>
 {
 public:
-	HttpClient(socket_ptr socket, msg_handler msgHandler = nullptr, disconnect_handler disHandler = nullptr);
+	HttpClient(ssl_socket socket, msg_handler msgHandler = nullptr, disconnect_handler disHandler = nullptr);
 
 	void start();
 
 	void send(boost::shared_ptr<boost::beast::http::response<boost::beast::http::string_body>> resp);
-
-	socket_ptr getRawSocket() {
-		return socket;
-	}
 
 	~HttpClient();
 
@@ -28,9 +24,12 @@ private:
 	void close();
 
 	void readRequest();
+	bool asyncVerifyHandler(bool preverified, boost::asio::ssl::verify_context& verifyCtx);
+	void asyncHandshakeHandler(const boost::system::error_code& error);
 	void asyncReceiveHandler(const boost::system::error_code& error, unsigned int nBytes);
 	void asyncSendHandler(const boost::system::error_code& error, unsigned int nBytes, bool close);
-	socket_ptr socket;
+	std::string subject;
+	ssl_socket socket;
 
 	boost::beast::flat_buffer buffer;
 	req_ptr req;

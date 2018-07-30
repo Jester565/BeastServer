@@ -45,7 +45,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -78,8 +78,8 @@
     <LibraryPath>C:\Users\ajcra\Desktop\c++\libs\boost_1_66_0\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\ajcra\Desktop\c++\libs\boost_1_66_0;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\ajcra\Desktop\c++\libs\boost_1_66_0\stage\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files\OpenSSL\include;C:\Users\ajcra\Desktop\c++\libs\boost_1_66_0;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files\OpenSSL\lib;C:\Users\ajcra\Desktop\c++\libs\boost_1_66_0\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -122,6 +122,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -149,6 +150,5 @@
     <ClInclude Include="Typedef.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

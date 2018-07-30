@@ -7,8 +7,8 @@
 
 using namespace boost::asio::ip;
 
-TCPAcceptor::TCPAcceptor(uint16_t port, boost::asio::io_service* ioService, raw_connect_handler conHandler)
-	:ioService(ioService), conHandler(conHandler)
+TCPAcceptor::TCPAcceptor(uint16_t port, boost::asio::io_service* ioService, boost::shared_ptr<boost::asio::ssl::context> sslContext, raw_connect_handler conHandler)
+	:ioService(ioService), sslContext(sslContext), conHandler(conHandler)
 {
 	acceptor = boost::make_shared<tcp::acceptor>(*ioService, tcp::endpoint(boost::asio::ip::tcp::v6(), port));
 }
@@ -25,8 +25,8 @@ void TCPAcceptor::close()
 	}
 	if (tempSocket != nullptr) {
 		boost::system::error_code ec;
-		tempSocket->shutdown(tcp::socket::shutdown_both, ec);
-		tempSocket->close();
+		tempSocket->lowest_layer().shutdown(tcp::socket::shutdown_both, ec);
+		tempSocket->lowest_layer().close();
 	}
 }
 
@@ -47,6 +47,6 @@ void TCPAcceptor::asyncAcceptHandler(const boost::system::error_code & ec)
 
 void TCPAcceptor::runAccept()
 {
-	tempSocket = boost::make_shared<boost::asio::ip::tcp::socket>(*ioService);
-	acceptor->async_accept(*tempSocket, boost::bind(&TCPAcceptor::asyncAcceptHandler, shared_from_this(), boost::asio::placeholders::error));
+	tempSocket = boost::make_shared<boost::asio::ssl::stream<boost::asio::ip::tcp::socket>>(*ioService, *sslContext);
+	acceptor->async_accept(tempSocket->lowest_layer(), boost::bind(&TCPAcceptor::asyncAcceptHandler, shared_from_this(), boost::asio::placeholders::error));
 }

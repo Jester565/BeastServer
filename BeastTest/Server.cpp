@@ -3,12 +3,27 @@
 #include "HttpClient.h"
 #include "ClientManager.h"
 #include "EventManager.h"
+#include <boost/make_shared.hpp>
 
-Server::Server(uint16_t port)
+Server::Server(uint16_t port, const std::string& chainFile, const std::string& keyFile, const std::string& verifyPath)
 {
 	ioService = new boost::asio::io_service();
-	tcpAcceptor = boost::shared_ptr<TCPAcceptor>(new TCPAcceptor(port, ioService, (raw_connect_handler)std::bind(&Server::rawConnectHandler, this, std::placeholders::_1)));
+	sslContext = boost::make_shared<boost::asio::ssl::context>(boost::asio::ssl::context::sslv23);
+	sslContext->set_options(boost::asio::ssl::context::default_workarounds
+		| boost::asio::ssl::context::single_dh_use);
+	try {
+		sslContext->use_certificate_chain_file(chainFile);
+		sslContext->use_private_key_file(keyFile, boost::asio::ssl::context::pem);
+		sslContext->set_verify_mode(boost::asio::ssl::verify_peer | boost::asio::ssl::verify_fail_if_no_peer_cert);
+		sslContext->load_verify_file(verifyPath);
+	}
+	catch (std::exception& ex) {
+		std::cerr << "ERROR WHEN CREATING SSL CONTEXT: " << ex.what() << std::endl;
+	}
+	tcpAcceptor = boost::shared_ptr<TCPAcceptor>(new TCPAcceptor(port, ioService, sslContext, 
+		(raw_connect_handler)std::bind(&Server::rawConnectHandler, this, std::placeholders::_1)));
 	clientManager = new ClientManager();
+	evtManager = new EventManager();
 }
 
 void Server::run()
@@ -16,7 +31,7 @@ void Server::run()
 	tcpAcceptor->run();
 }
 
-void Server::rawConnectHandler(socket_ptr socket)
+void Server::rawConnectHandler(ssl_socket socket)
 {
 	std::cout << "CONNECTED" << std::endl;
 	client_ptr client = boost::shared_ptr<HttpClient>(new HttpClient(socket, 

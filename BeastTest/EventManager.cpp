@@ -63,6 +63,9 @@ EventManager::~EventManager()
 
 void EventManager::onMessageHandlerNotFound(client_ptr client, req_ptr req)
 {
+	if (req == nullptr) {
+		return;
+	}
 	auto resp = CreateResponse();
 	resp->result(404);
 	resp->keep_alive(true);

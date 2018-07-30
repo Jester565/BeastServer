@@ -8,7 +8,7 @@
 class TCPAcceptor : public boost::enable_shared_from_this<TCPAcceptor>
 {
 public:
-	TCPAcceptor(uint16_t port, boost::asio::io_service* ioService, raw_connect_handler conHandler = nullptr);
+	TCPAcceptor(uint16_t port, boost::asio::io_service* ioService, boost::shared_ptr<boost::asio::ssl::context> sslContext, raw_connect_handler conHandler = nullptr);
 
 	void run();
 
@@ -25,7 +25,9 @@ private:
 
 	void runAccept();
 
-	boost::shared_ptr<boost::asio::ip::tcp::socket> tempSocket;
+	ssl_socket tempSocket;
+
+	boost::shared_ptr<boost::asio::ssl::context> sslContext;
 
 	boost::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor;
 
