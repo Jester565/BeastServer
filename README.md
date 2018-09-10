@@ -3,7 +3,7 @@ The boost asio and beast examples makes using their libraries seem excessively d
 the two libraries and provides extra features including simple request routing and client management.
 
 ## Installation
-Requirements: Boost Threading & Regex
+Requirements: [CMake](https://cmake.org/), [Boost](https://www.boost.org/) Threading & Regex
 ```
 mkdir build
 cd build
